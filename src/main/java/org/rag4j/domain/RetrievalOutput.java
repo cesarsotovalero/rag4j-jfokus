@@ -1,6 +1,7 @@
 package org.rag4j.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.List;
@@ -10,11 +11,13 @@ import java.util.List;
  */
 @Builder
 @Getter
+@EqualsAndHashCode
 public class RetrievalOutput {
     private List<RetrievalOutputItem> items;
 
     @Builder
     @Getter
+    @EqualsAndHashCode
     public static class RetrievalOutputItem {
         private String documentId;
         private int chunkId;

@@ -33,23 +33,20 @@ limits. The API key is obtained through a remote file, which is encrypted. Of co
 you have it.
 
 ### Environment variables
-The easiest way to load the API key is to set an environment variable for each required key. The names of the
-environment variables are:
-- `openai_api_key`
-- `weaviate_api_key`
-- `weaviate_url`
+For the workshop, we provided a key to use for OpenAI. This key is stored in a remote file, which is encrypted. To
+decrypt this file, we need a secret key. This key is stored in an environment variable. The name of the environment
+variable is `secret_key`. The value of this key will be provided during the workshop.
 
-Another way of doing this is through the file on your classpath in the resources folder. This file is
-called `env.properties`. It contains the following lines:
+The provide an environment variable through a line in the file env.properties on the classpath. 
+```properties
+secret_key=...
+```
+
+If you have your own key, you can use the same file to store the following lines:
 ```properties
 openai_api_key=sk-...
 weaviate_api_key=...
 weaviate_url=...
 ```
-
-The final method is to provide an environment variable or a line in the mentioned file containing the following line:
-```properties
-secret_key=...
-```
-This secret key is used to decrypt the remote file containing the API keys. We will provide the value for this key
-during the workshop.
+If you omit the weaviate parameter, you still need to provided the `secret_key` in the file. Then, the weaviate
+parameters will be read from the remote file.
