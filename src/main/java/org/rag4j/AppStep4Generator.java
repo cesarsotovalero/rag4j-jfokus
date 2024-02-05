@@ -30,11 +30,25 @@ public class AppStep4Generator {
 
         // TODO: Generate an answer to the question given the context.
         // begin solution
+        String answer = answerGenerator.generateAnswer(question, context);
+        System.out.println(answer);
         // end solution
 
         // TODO: Create a new RAGObserver object and use it with the AnswerQualityService class determine the quality of
         //  the answer in relation to the question and the context.
         // begin solution
+        RAGObserver ragObserver = new RAGObserver();
+        ragObserver.setAnswer(answer);
+        ragObserver.setQuestion(question);
+        ragObserver.setContext(context);
+        AnswerQualityService answerQualityService = new AnswerQualityService(openAIClient);
+        AnswerQuality answerQuality = answerQualityService.determineQualityOfAnswer(ragObserver);
+        System.out.printf("Quality of answer in relation to the question: %d - %s%n",
+                answerQuality.getAnswerToQuestionQuality().getQuality(),
+                answerQuality.getAnswerToQuestionQuality().getReason());
+        System.out.printf("Quality of answer in relation to the context: %d - %s%n",
+                answerQuality.getAnswerFromContextQuality().getQuality(),
+                answerQuality.getAnswerFromContextQuality().getReason());
         // end solution
     }
 }
