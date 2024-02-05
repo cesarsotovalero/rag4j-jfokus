@@ -6,6 +6,7 @@ import org.rag4j.generation.AnswerGenerator;
 import org.rag4j.generation.ObservedAnswerGenerator;
 import org.rag4j.indexing.Embedder;
 import org.rag4j.openai.OpenAIAnswerGenerator;
+import org.rag4j.openai.OpenAIConstants;
 import org.rag4j.openai.OpenAIEmbedder;
 import org.rag4j.openai.OpenAIFactory;
 import org.rag4j.quality.AnswerQuality;
@@ -47,15 +48,18 @@ public class AppStep6AllTogether {
         // TODO: Make the code run.
 
         // solution
-        WindowRetrievalStrategy windowRetrievalStrategy = null;
-        AnswerGenerator answerGenerator = null;
-        AnswerQualityService answerQuality = null;
+        Retriever observedRetriever = new ObservedRetriever(retriever);
+        WindowRetrievalStrategy windowRetrievalStrategy = new WindowRetrievalStrategy(observedRetriever, 1);
+        AnswerGenerator answerGenerator = new OpenAIAnswerGenerator(keyLoader, OpenAIConstants.DEFAULT_MODEL);
+        ObservedAnswerGenerator observedAnswerGenerator = new ObservedAnswerGenerator(answerGenerator);
+        OpenAIClient client = OpenAIFactory.obtainsClient(keyLoader.getOpenAIKey());
+        AnswerQualityService answerQuality = new AnswerQualityService(client);
         //end of solution
 
         List<AnswerQuality> overallQuality = exampleSentences.stream().map(question -> {
             RetrievalOutput retrievalOutput = windowRetrievalStrategy.retrieve(question, embedder.embed(question), 1, true);
 
-            String answer = answerGenerator.generateAnswer(question, retrievalOutput.constructContext());
+            String answer = observedAnswerGenerator.generateAnswer(question, retrievalOutput.constructContext());
             System.out.printf("Question: %s%nAnswer: %s%n", question, answer);
 
             RAGObserver observer = RAGTracker.getRAGObserver();
