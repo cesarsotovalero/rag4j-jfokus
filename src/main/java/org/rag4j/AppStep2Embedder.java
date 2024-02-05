@@ -23,10 +23,16 @@ public class AppStep2Embedder {
 
         // TODO: Now use the AllMiniLmL6V2QEmbedder to create an embedding for the chunk. What is the size of the embedding?
         // begin solution
+        embedder = new AllMiniLmL6V2QEmbedder();
+        System.out.println(embedder.embed(chunk));
+        System.out.println(embedder.embed(chunk).size());
         // end solution
 
         // TODO: Now use the OpenAIEmbedder to create an embedding for the chunk. What is the size of the embedding?
         // begin solution
+        embedder = new org.rag4j.openai.OpenAIEmbedder();
+        System.out.println(embedder.embed(chunk));
+        System.out.println(embedder.embed(chunk).size());
         // end solution
     }
 }

@@ -35,6 +35,13 @@ public class AlphabetEmbedder implements Embedder {
 
         double[] counts = new double[26];
         // solution
+        text = stripDiacritics(text.toLowerCase());
+
+        for (char c : text.toCharArray()) {
+            if (Character.isLetter(c)) {
+                counts[c - 'a']++;
+            }
+        }
         // end of solution
 
         return Arrays.stream(counts).boxed().collect(Collectors.toList());
