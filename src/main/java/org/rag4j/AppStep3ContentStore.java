@@ -2,7 +2,10 @@ package org.rag4j;
 
 import org.rag4j.domain.InputDocument;
 import org.rag4j.domain.RelevantChunk;
-import org.rag4j.indexing.*;
+import org.rag4j.indexing.Embedder;
+import org.rag4j.indexing.IndexingService;
+import org.rag4j.indexing.OpenNLPSentenceSplitter;
+import org.rag4j.indexing.Splitter;
 import org.rag4j.quality.QuestionAnswerRecord;
 import org.rag4j.quality.RetrievalQuality;
 import org.rag4j.quality.RetrievalQualityService;
@@ -42,22 +45,35 @@ public class AppStep3ContentStore {
 
         // TODO: Store the document in the content store.
         // begin solution
+        Splitter splitter = new OpenNLPSentenceSplitter();
+        contentStore.store(document, splitter);
         //end solution
 
         // TODO: Use the retriever part of the content store to find the most relevant chunks for the question.
         String question = "Who did the Swedish king sign a contract with?";
         // begin solution
+        List<RelevantChunk> relevantChunks = contentStore.findRelevantChunks(question, embedder.embed(question), 1);
+        relevantChunks.forEach(relevantChunk -> System.out.printf("Chunk: %s%n", relevantChunk.getText()));
         // end solution
 
         // TODO: What is the quality of the retrieval? Use the method above to determine the quality of the retrieval.
         //  Use the IndexingService to index the documents from the file vasa-timeline.jsonl into the internal
         //  content store. Use the OpenNLPSentenceSplitter to split the documents into chunks.
         // begin solution
+        contentStore = new InternalContentStore(embedder);
+        IndexingService indexingService = new IndexingService(contentStore);
+        indexingService.indexDocuments(new VasaContentReader(), splitter);
+        System.out.println(determineQualityOfOurRetriever(contentStore, embedder));
         // end solution
 
         // TODO: Do the same things as above (splitting, indexing, quality check), but now use the AllMiniLmL6V2QEmbedder
         //  instead of the AlphabetEmbedder. Did the quality get better, or worse? And why do you think that is?
         // begin solution
+        embedder = new org.rag4j.localembedder.AllMiniLmL6V2QEmbedder();
+        contentStore = new InternalContentStore(embedder);
+        indexingService = new IndexingService(contentStore);
+        indexingService.indexDocuments(new VasaContentReader(), splitter);
+        System.out.println(determineQualityOfOurRetriever(contentStore, embedder));
         // end solution
     }
 }
