@@ -25,8 +25,9 @@ public class AppStep1ChunkingStrategy {
         // TODO Use a splitter to split the text into chunks, use a splitter that creates chunks for each sentence
         //  notice that properties of the document are copied to the chunks. How many chunks do you get?
         // begin solution
+        OpenNLPSentenceSplitter splitter = new OpenNLPSentenceSplitter();
+        return splitter.split(inputDocument);
         // end solution
-        return List.of();
     }
 
     public static void main(String[] args) {
@@ -42,10 +43,16 @@ public class AppStep1ChunkingStrategy {
 
         // TODO check the response, how many chunks are found? Did you expect the chunks that are returned?
         // begin solution
+        System.out.printf("Number of chunks found %d%n", foundChunks.size());
+        foundChunks.forEach(chunk -> System.out.printf("Chunk: %s%n", chunk.getText()));
         // end solution
 
         // TODO EXTRA: try to create a different splitter that creates chunks with a maximum size of 128 characters
         // begin solution
+        MaxSizeSplitter maxSizeSplitter = new MaxSizeSplitter(128);
+        foundChunks = maxSizeSplitter.split(inputDocument);
+        System.out.printf("%nNumber of chunks found %d%n", foundChunks.size());
+        foundChunks.forEach(chunk -> System.out.printf("Chunk: %s%n", chunk.getText()));
         // end solution
     }
 }
